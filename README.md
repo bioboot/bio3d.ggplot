@@ -27,7 +27,16 @@ To make some nice figures (i.e. nicer than base graphics versions):
 
 ```
 library(bio3d.ggplot)
+library(bio3d)
+library(ggplot2)
 
+## Run the examples below
+example(bio3d.ggplot)
+```
+
+Or run each example in turn (these are in the man/help page for the package):
+
+```
  ##- Single structure distance matrix
  pdb <- bio3d::read.pdb( "5p21" )
  k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
