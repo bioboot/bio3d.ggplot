@@ -1,0 +1,18 @@
+Package: bio3d.ggplot
+Type: Package
+Title: Plot Matrix Data From The bio3d Package With ggplot2
+Version: 0.1.0
+Author: Barry Grant
+Maintainer: Barry Grant <barryus@gmail.com>
+Description: Utility functions for plotting bio3d matrix data including
+    distance matrices, contact maps, correlation plots (DCCMs), pca and nma
+    results using ggplot2 rather than the base and grid graphics functions
+    included in the bio3d package itself.
+License: GPL-3
+Imports:
+    bio3d,
+    ggplot2,
+    reshape2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
