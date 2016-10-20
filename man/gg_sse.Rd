@@ -14,9 +14,10 @@ read.pdb and read.fasta.pdbs. However, a vector of sse elements as obtained
 from the function pdb2sse is also valid input. The later is usefull for more
 compliacted multi-chain input structures. See examples.}
 
-\item{min}{Currently the bottom coord for annotation rectangles. More negative
-values will result in larger width rectangles. Eventually this will be the
-relative width of sse annotation rectangles.}
+\item{min}{Currently the bottom coord for annotation rectangles. More
+negative values will result in larger width rectangles. Eventually
+we will change this to introduce a single input for spesiffing the relative
+width of sse annotation rectangles.}
 
 \item{max}{the top coord of annotation rectangles.}
 
@@ -46,5 +47,6 @@ Two forms of secondary structure annotation are available: so
  ggplot.dmat(k)
 
  ggplot.dmat(k) + gg_sse(pdb) ## Add secondary structure from pdb
+
 }
 

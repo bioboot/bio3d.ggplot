@@ -8,9 +8,10 @@
 #'   read.pdb and read.fasta.pdbs. However, a vector of sse elements as obtained
 #'   from the function pdb2sse is also valid input. The later is usefull for more
 #'   compliacted multi-chain input structures. See examples.
-#' @param min Currently the bottom coord for annotation rectangles. More negative
-#'   values will result in larger width rectangles. Eventually this will be the
-#'   relative width of sse annotation rectangles.
+#' @param min Currently the bottom coord for annotation rectangles. More
+#'   negative values will result in larger width rectangles. Eventually
+#'   we will change this to introduce a single input for spesiffing the relative
+#'   width of sse annotation rectangles.
 #' @param max the top coord of annotation rectangles.
 #' @param helix.col The fill colors for rectangles representing alpha helices.
 #' @param sheet.col The fill colors for rectangles representing beta strands.
@@ -31,6 +32,8 @@
 #'  ggplot.dmat(k)
 #'
 #'  ggplot.dmat(k) + gg_sse(pdb) ## Add secondary structure from pdb
+#'
+#' @export
 
 gg_sse <- function(x, min=-5, max=0, helix.col = "gray20", sheet.col = "gray80", sse.border = "black") {
   ## Add secondary structure to a ggplot
@@ -72,13 +75,13 @@ pdbs2helix <- function(pdbs) {
 
     xend <- sum(x$calpha)
     out <- list(
-      annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-      annotate("rect", xmin=x$helix$start, xmax =x$helix$end, ymin=min, ymax=max, col=sse.border, bg=helix.col),
-      annotate("rect", xmin=x$sheet$start, xmax =x$sheet$end, ymin=min, ymax=max, col=sse.border, bg=sheet.col),
+      ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
+      ggplot2::annotate("rect", xmin=x$helix$start, xmax =x$helix$end, ymin=min, ymax=max, col=sse.border, bg=helix.col),
+      ggplot2::annotate("rect", xmin=x$sheet$start, xmax =x$sheet$end, ymin=min, ymax=max, col=sse.border, bg=sheet.col),
 
-      annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-      annotate("rect", xmin=min, xmax=max, ymin=x$helix$start, ymax=x$helix$end, col=sse.border, bg=helix.col),
-      annotate("rect", xmin=min, xmax=max, ymin=x$sheet$start, ymax=x$sheet$end, col=sse.border, bg=sheet.col) )
+      ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
+      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=x$helix$start, ymax=x$helix$end, col=sse.border, bg=helix.col),
+      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=x$sheet$start, ymax=x$sheet$end, col=sse.border, bg=sheet.col) )
   }
 
   if( inherits(x,"pdbs") ){
@@ -86,13 +89,13 @@ pdbs2helix <- function(pdbs) {
     xs <- pdbs2helix(x)
     xend <- ncol(x$sse)
     out <- list(
-      annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-      annotate("rect", xmin=xs$pdb1$helix$start, xmax=xs$pdb1$helix$end, ymin =min, ymax=max, col=sse.border, bg=helix.col),
-      annotate("rect", xmin=xs$pdb1$sheet$start, xmax=xs$pdb1$sheet$end, ymin =min, ymax=max, col=sse.border, bg=sheet.col),
+      ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
+      ggplot2::annotate("rect", xmin=xs$pdb1$helix$start, xmax=xs$pdb1$helix$end, ymin =min, ymax=max, col=sse.border, bg=helix.col),
+      ggplot2::annotate("rect", xmin=xs$pdb1$sheet$start, xmax=xs$pdb1$sheet$end, ymin =min, ymax=max, col=sse.border, bg=sheet.col),
 
-      annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-      annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$helix$start, ymax=xs$pdb2$helix$end, col=sse.border, bg=helix.col),
-      annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$sheet$start, ymax=xs$pdb2$sheet$end, col=sse.border, bg=sheet.col) )
+      ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
+      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$helix$start, ymax=xs$pdb2$helix$end, col=sse.border, bg=helix.col),
+      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$sheet$start, ymax=xs$pdb2$sheet$end, col=sse.border, bg=sheet.col) )
 
   } else {
 
@@ -103,13 +106,13 @@ pdbs2helix <- function(pdbs) {
 
       xend <- length(x)
       out <- list(
-        annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-        annotate("rect", xmin=h[,"start"], xmax=h[,"end"], ymin =min, ymax=max, col=sse.border, bg=helix.col),
-        annotate("rect", xmin=e[,"start"], xmax=e[,"end"], ymin =min, ymax=max, col=sse.border, bg=sheet.col),
+        ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
+        ggplot2::annotate("rect", xmin=h[,"start"], xmax=h[,"end"], ymin =min, ymax=max, col=sse.border, bg=helix.col),
+        ggplot2::annotate("rect", xmin=e[,"start"], xmax=e[,"end"], ymin =min, ymax=max, col=sse.border, bg=sheet.col),
 
-        annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-        annotate("rect", xmin=min, xmax=max, ymin=h[,"start"], ymax=h[,"end"], col=sse.border, bg=helix.col),
-        annotate("rect", xmin=min, xmax=max, ymin=e[,"start"], ymax=e[,"end"], col=sse.border, bg=sheet.col) )
+        ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
+        ggplot2::annotate("rect", xmin=min, xmax=max, ymin=h[,"start"], ymax=h[,"end"], col=sse.border, bg=helix.col),
+        ggplot2::annotate("rect", xmin=min, xmax=max, ymin=e[,"start"], ymax=e[,"end"], col=sse.border, bg=sheet.col) )
     }
   }
   out

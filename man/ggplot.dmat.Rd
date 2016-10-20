@@ -7,10 +7,10 @@
 ggplot.dmat(dm)
 }
 \arguments{
-\item{dm}{A numeric matrix such as a distance matrix from the bio3d functions
-\code{dm}, \code{cmap}, \code{dccm} etc. Could write these as \code{\link[bio3d]{dm}},
-\code{\link[bio3d]{cmap}}, \code{\link[bio3d]{dccm}}, \code{pca.array.loadings},
-etc.}
+\item{dm}{A numeric matrix such as a distance matrix from the bio3d
+functions \code{dm}, \code{cmap}, \code{dccm} etc. Could write these
+as \code{\link[bio3d]{dm}}, \code{\link[bio3d]{cmap}}, \code{\link[bio3d]{dccm}},
+\code{pca.array.loadings}, etc.}
 }
 \value{
 A ggplot object for plotting with \code{print.ggplot}.
@@ -27,19 +27,57 @@ This is a simple first go at getting our usual bio3d matrices into a ggplot
 Still much to be improved here, including adding extra args via dots.
 }
 \examples{
+ ##- Single structure distance matrix
  pdb <- bio3d::read.pdb( "5p21" )
  k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
  ggplot.dmat(k)
 
- ggplot.dmat(k) + gg_sse(pdb) ## Add secondary structure from pdb
+ ## Add secondary structure 'annotation layer' to plot
+ p <- ggplot.dmat(k) + gg_sse(pdb)  ## save in an object 'p'
+ p  ## produce the plot
 
- ggplot(k) + theme_grey() +   ## The ggplot2 gray background theme
+\dontrun{
+ ## Data driven axis from SSE boundaries
+ sse_labels <- c(pdb$helix$start, pdb$sheet$start,
+                 pdb$helix$end, pdb$sheet$end)
+ x <- sort(sse_labels); x <- x[diff(x)> 4]
+
+ ## Add your customization with addational layers
+ p + theme_grey() + ## The ggplot2 gray background theme
+  scale_fill_gradient(high = "orange", low = "white") +
+  scale_y_continuous("My Y label",breaks=x, labels=x, expand=c(0,0.5)) +
+  scale_x_continuous("My X label",breaks=x, labels=x, expand=c(0,0.5))
+
+
+ ggplot.dmat(k) + theme_minimal(base_size = 14) +
    scale_x_continuous(expand = c(0, 0)) +
    scale_y_continuous(expand = c(0, 0))  ## start axis at zero
+
+##- Calculate and plot correlation matrix
+cij <- dccm.nma(nma(pdb))
+q <- ggplot.dmat(cij) + gg_sse(pdb)
+q
+
+q +  scale_fill_gradient2(limit = c(-1,1),
+         high = "red", mid = "white", low = "blue")
+
+##- Difference distance matrices (DDM) of heterogenous structures
+pdbs <- pdbaln( c("5p21","4q21") )
+mat <- dm(pdbs, mask.lower=FALSE)
+ddm <- mat[,,1] - mat[,,2]
+ggplot.dmat(ddm) + gg_sse(pdbs)
+
+##- Contact maps
+cm <- cmap(pdb, scut=0, mask.lower=FALSE)
+ggplot.dmat(cm) + gg_sse(pdb) + theme(legend.position="none")
+
+}
 }
 \seealso{
-The bio3d base, grid and lattice ploting functions for various matrix class objects.
-  This includes \code{\link[bio3d]{plot.dmat}}, \code{\link[bio3d]{plot.dccm}},
-  \code{\link[bio3d]{plot.cmap}}, etc.
+The function \code{\link{gg_sse}} for adding secondary structure
+  annotation. The various bio3d base, grid and lattice ploting functions
+  for various bio3d matrix class objects. This includes:
+ \code{\link[bio3d]{plot.dmat}},
+  \code{\link[bio3d]{plot.dccm}}, \code{\link[bio3d]{plot.cmap}}, etc.
 }
 
