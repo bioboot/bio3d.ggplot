@@ -18,14 +18,16 @@ and one vector plot function (the later like `plot.bio3d()`. The
 `plot.dmat()` function is the start of the first.  
 
 To install:
+
 ```
 devtools::install_github("bioboot/bio3d.ggplot")
 ```
 
+To make some nice figures (i.e. nicer than base graphics versions):
 
-
-To make some nice figures:
 ```
+library(bio3d.ggplot)
+
  ##- Single structure distance matrix
  pdb <- bio3d::read.pdb( "5p21" )
  k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
