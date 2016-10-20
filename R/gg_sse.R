@@ -3,23 +3,29 @@
 #' Add marginal secondary structure elements (SSEs) annotation layer to the
 #'   current ggplot object.
 #'
-#' @param x A bio3d object with secondary structure information. Most commonely
+#' @param x A bio3d object with secondary structure information. Most commonly
 #'   this is a pdb or pdbs class object as obtained from the bio3d functions
 #'   read.pdb and read.fasta.pdbs. However, a vector of sse elements as obtained
-#'   from the function pdb2sse is also valid input. The later is usefull for more
-#'   compliacted multi-chain input structures. See examples.
-#' @param min Currently the bottom coord for annotation rectangles. More
-#'   negative values will result in larger width rectangles. Eventually
-#'   we will change this to introduce a single input for spesiffing the relative
+#'   from the function pdb2sse is also valid input. The later is useful for more
+#'   complicated multi-chain input structures. See examples.
+#' @param min Currently the bottom most coordinate  for annotation rectangles. 
+#'   More negative values will result in larger width rectangles. Eventually
+#'   we will change this to introduce a single input for specifying the relative
 #'   width of sse annotation rectangles.
-#' @param max the top coord of annotation rectangles.
+#' @param max the top most plot coordinate for annotation rectangles.
 #' @param helix.col The fill colors for rectangles representing alpha helices.
 #' @param sheet.col The fill colors for rectangles representing beta strands.
 #' @param sse.border The stroke color for rectangle borders.
 #'
 #' @return A list of annotation layers for adding to a ggplot object.
 #'
-#' @note Two forms of secondary structure annotation are available: so
+#' @note There is lots to clean up and improve in this function. This includes 
+#'   making on one call to annotate() for all rectangles rather than the four  
+#'   calls per input type we do currently. Also we need a side=c(1:4) option  
+#'   so we can add this for 1d plots and 2d plots (with the later providing any
+#'    combination of annotated axis). 
+#'
+#'   Two forms of secondary structure annotation are available: so
 #'   called ‘classic’ and ‘fancy’. The former draws marginal rectangles
 #'   and has been available within Bio3D from version 0.1. The later
 #'   draws more ‘fancy’ (and distracting) 3D like helices and arrowed strands.

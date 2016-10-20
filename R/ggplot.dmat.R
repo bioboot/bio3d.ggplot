@@ -4,7 +4,7 @@
 #'
 #' This is a simple first go at getting our usual bio3d matrices into a ggplot
 #'   friendly format. This works with utility functions for adding annotations
-#'   such as secondary structure, domain boundarys highlight regions etc.
+#'   such as secondary structure, domain boundaries, highlight regions etc.
 #'
 #' @param dm A numeric matrix such as a distance matrix from the bio3d
 #'   functions \code{dm}, \code{cmap}, \code{dccm} etc. Could write these
@@ -16,7 +16,7 @@
 #' @note Still much to be improved here, including adding extra args via dots.
 #'
 #' @seealso The function \code{\link{gg_sse}} for adding secondary structure
-#'   annotation. The various bio3d base, grid and lattice ploting functions
+#'   annotation. The various bio3d base, grid and lattice plotting functions
 #'   for various bio3d matrix class objects. This includes:
 #'  \code{\link[bio3d]{plot.dmat}},
 #'   \code{\link[bio3d]{plot.dccm}}, \code{\link[bio3d]{plot.cmap}}, etc.
@@ -37,7 +37,7 @@
 #'                  pdb$helix$end, pdb$sheet$end)
 #'  x <- sort(sse_labels); x <- x[diff(x)> 4]
 #'
-#'  ## Add your customization with addational layers
+#'  ## Add your customization with additional layers
 #'  p + theme_grey() + ## The ggplot2 gray background theme
 #'   scale_fill_gradient(high = "orange", low = "white") +
 #'   scale_y_continuous("My Y label",breaks=x, labels=x, expand=c(0,0.5)) +
@@ -56,7 +56,7 @@
 #' q +  scale_fill_gradient2(limit = c(-1,1),
 #'          high = "red", mid = "white", low = "blue")
 #'
-#' ##- Difference distance matrices (DDM) of heterogenous structures
+#' ##- Difference distance matrices (DDM) of heterogeneous structures
 #' pdbs <- pdbaln( c("5p21","4q21") )
 #' mat <- dm(pdbs, mask.lower=FALSE)
 #' ddm <- mat[,,1] - mat[,,2]
