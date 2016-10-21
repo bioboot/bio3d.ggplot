@@ -22,13 +22,24 @@ vector plot function (the later like `plot.bio3d()`. The the `gg_*()`
 annotation functions should work for all of these in the same way.   
 
 To install:
+
 ```
 devtools::install_github("bioboot/bio3d.ggplot")
 ```
 
+To make some nice figures (i.e. nicer than base graphics versions):
 
+```
+library(bio3d.ggplot)
+library(bio3d)
+library(ggplot2)
 
-To make some nice figures:
+## Run the examples below
+example(bio3d.ggplot)
+```
+
+Or run each example in turn (these are in the man/help page for the package):
+
 ```
  ##- Single structure distance matrix
  pdb <- read.pdb( "5p21" )
