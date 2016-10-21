@@ -9,7 +9,7 @@ Description: Utility functions for plotting bio3d matrix data including
     results using ggplot2 rather than the base and grid graphics functions
     included in the bio3d package itself.
 License: GPL-3
-Imports:
+Depends:
     bio3d,
     ggplot2,
     reshape2

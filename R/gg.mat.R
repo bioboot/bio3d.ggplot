@@ -1,6 +1,6 @@
 #' ggplot bio3d matrix data
 #'
-#' \code{ggplot.dmat} returns a ggplot version of plot.dmat() NxN matrix plot.
+#' \code{gg.mat} returns a ggplot version of plot.dmat() NxN matrix plot.
 #'
 #' This is a simple first go at getting our usual bio3d matrices into a ggplot
 #'   friendly format. This works with utility functions for adding annotations
@@ -23,12 +23,12 @@
 #'
 #' @examples
 #'  ##- Single structure distance matrix
-#'  pdb <- bio3d::read.pdb( "5p21" )
-#'  k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
-#'  ggplot.dmat(k)
+#'  pdb <- read.pdb( "5p21" )
+#'  k <- dm(pdb, inds="calpha", mask.lower=FALSE)
+#'  gg.mat(k)
 #'
 #'  ## Add secondary structure 'annotation layer' to plot
-#'  p <- ggplot.dmat(k) + gg_sse(pdb)  ## save in an object 'p'
+#'  p <- gg.mat(k) + gg_sse(pdb)  ## save in an object 'p'
 #'  p  ## produce the plot
 #'
 #' \dontrun{
@@ -44,32 +44,32 @@
 #'   scale_x_continuous("My X label",breaks=x, labels=x, expand=c(0,0.5))
 #'
 #'
-#'  ggplot.dmat(k) + theme_minimal(base_size = 14) +
+#'  gg.mat(k) + theme_minimal(base_size = 14) +
 #'    scale_x_continuous(expand = c(0, 0)) +
 #'    scale_y_continuous(expand = c(0, 0))  ## start axis at zero
 #'
 #' ##- Calculate and plot correlation matrix
 #' cij <- dccm.nma(nma(pdb))
-#' q <- ggplot.dmat(cij) + gg_sse(pdb)
+#' q <- gg.mat(cij) + gg_sse(pdb)
 #' q
 #'
 #' q +  scale_fill_gradient2(limit = c(-1,1),
 #'          high = "red", mid = "white", low = "blue")
 #'
 #' ##- Difference distance matrices (DDM) of heterogeneous structures
-#' pdbs <- pdbaln( c("5p21","4q21") )
+#' pdbs <- pdbaln( c("5p21","4q21"), outfile=NULL )
 #' mat <- dm(pdbs, mask.lower=FALSE)
 #' ddm <- mat[,,1] - mat[,,2]
-#' ggplot.dmat(ddm) + gg_sse(pdbs)
+#' gg.mat(ddm) + gg_sse(pdbs)
 #'
 #' ##- Contact maps
 #' cm <- cmap(pdb, scut=0, mask.lower=FALSE)
-#' ggplot.dmat(cm) + gg_sse(pdb) + theme(legend.position="none")
+#' gg.mat(cm) + gg_sse(pdb) + theme(legend.position="none")
 #'
 #' }
 #' @export
 
-ggplot.dmat <- function(dm){
+gg.mat <- function(dm){
   ## Simple ggplot version of plot.dmat()
   ##   ToDo: Add all the options as input args and dots() ...
 

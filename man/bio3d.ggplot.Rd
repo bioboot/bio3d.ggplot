@@ -7,16 +7,18 @@
 \title{bio3d.ggplot: Easy 'ggplotting' of bio3d package Data.}
 \description{
 The bio3d.ggplot package provides two categories of functions:
- ggplot.* and gg_* functions. This first produce the ggplot objects from 
- bio3d data.  The later add layers to the former.
+ \strong{gg.*} and \strong{gg_*} functions. This first produce the ggplot 
+ objects from bio3d data (i.e. the plots).  The later add layers to the 
+ former (for example, add secondary structure annotation).
 }
 \note{
-Currently the main function is \code{ggplot.dmat}, which returns a 
- ggplot version of the old plot.dmat() for NxN matrix data.
+Currently the main function is \strong{\code{gg.mat}}, which returns  
+ aggplot version of the old \strong{plot.dmat()} function in bio3d for 
+ NxN matrix data.
 
  Also included is a basic secondary structure element annotation function 
- called \code{gg_sse()} that provides the classic alpha helix and beta 
- strand rectangles seen in bio3d since day one. Options for more fancy  
+ called \strong{\code{gg_sse()}} that provides the classic alpha helix and  
+ beta strand rectangles seen in bio3d since day one. Options for more fancy  
  helices will follow.
 
  This a work in progress.
@@ -26,12 +28,12 @@ Currently the main function is \code{ggplot.dmat}, which returns a
 }
 \examples{
  ##- Single structure distance matrix
- pdb <- bio3d::read.pdb( "5p21" )
- k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
- ggplot.dmat(k)
+ pdb <- read.pdb( "5p21" )
+ k <- dm(pdb, inds="calpha", mask.lower=FALSE)
+ gg.mat(k)
 
  ## Add secondary structure 'annotation layer' to plot
- p <- ggplot.dmat(k) + gg_sse(pdb)  ## save in an object 'p'
+ p <- gg.mat(k) + gg_sse(pdb)  ## save in an object 'p'
  p  ## produce the plot
 
 
@@ -48,14 +50,14 @@ Currently the main function is \code{ggplot.dmat}, which returns a
   scale_x_continuous("My X label",breaks=x, labels=x, expand=c(0,0.5))
 
 
- ggplot.dmat(k) + theme_minimal(base_size = 14) +
+ gg.mat(k) + theme_minimal(base_size = 14) +
    scale_x_continuous(expand = c(0, 0)) +
    scale_y_continuous(expand = c(0, 0))  ## start axis at zero
 
 
  ##- Calculate and plot correlation matrix
  cij <- dccm.nma(nma(pdb))
- q <- ggplot.dmat(cij) + gg_sse(pdb)
+ q <- gg.mat(cij) + gg_sse(pdb)
  q
 
  q +  scale_fill_gradient2(limit = c(-1,1),
@@ -63,15 +65,15 @@ Currently the main function is \code{ggplot.dmat}, which returns a
 
 
  ##- Difference distance matrices (DDM) of heterogeneous structures
- pdbs <- pdbaln( c("5p21","4q21") )
+ pdbs <- pdbaln( c("5p21","4q21"), outfile=NULL )
  mat <- dm(pdbs, mask.lower=FALSE)
  ddm <- mat[,,1] - mat[,,2]
- ggplot.dmat(ddm) + gg_sse(pdbs)
+ gg.mat(ddm) + gg_sse(pdbs)
 
 
  ##- Contact maps
  cm <- cmap(pdb, scut=0, mask.lower=FALSE)
- ggplot.dmat(cm) + gg_sse(pdb) + theme(legend.position="none")
+ gg.mat(cm) + gg_sse(pdb) + theme(legend.position="none")
 }
 
 }

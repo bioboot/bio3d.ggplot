@@ -33,11 +33,11 @@
 #'
 #'
 #' @examples
-#'  pdb <- bio3d::read.pdb( "5p21" )
-#'  k <- bio3d::dm(pdb, inds="calpha", mask.lower=FALSE)
-#'  ggplot.dmat(k)
+#'  pdb <- read.pdb( "5p21" )
+#'  k <- dm(pdb, inds="calpha", mask.lower=FALSE)
+#'  gg.mat(k)
 #'
-#'  ggplot.dmat(k) + gg_sse(pdb) ## Add secondary structure from pdb
+#'  gg.mat(k) + gg_sse(pdb) ## Add secondary structure from pdb
 #'
 #' @export
 
