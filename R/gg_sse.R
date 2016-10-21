@@ -57,11 +57,11 @@ pdbs2helix <- function(pdbs) {
   e <- which(pdbs$sse == "E", arr.ind=TRUE)
 
   ## Consider first two structures only!!
-  h1 = bounds(h[h[,1]==1,2], pre.sort = FALSE)
-  e1 = bounds(e[e[,1]==1,2], pre.sort = FALSE)
+  h1 = bio3d::bounds(h[h[,1]==1,2], pre.sort = FALSE)
+  e1 = bio3d::bounds(e[e[,1]==1,2], pre.sort = FALSE)
 
-  h2 = bounds(h[h[,1]==2,2], pre.sort = FALSE)
-  e2 = bounds(e[e[,1]==2,2], pre.sort = FALSE)
+  h2 = bio3d::bounds(h[h[,1]==2,2], pre.sort = FALSE)
+  e2 = bio3d::bounds(e[e[,1]==2,2], pre.sort = FALSE)
 
   ## could add a length filter here
   pdb1 <- list(helix=list(start=h1[,"start"], end=h1[,"end"]),
@@ -107,8 +107,8 @@ pdbs2helix <- function(pdbs) {
 
     if(is.vector(x)) {
       ## Take a vector of input as produced from pdb2sse(pdb)
-      h <- bounds(which(x == "H"), pre.sort = FALSE)
-      e <- bounds(which(x == "E"), pre.sort = FALSE)
+      h <- bio3d::bounds(which(x == "H"), pre.sort = FALSE)
+      e <- bio3d::bounds(which(x == "E"), pre.sort = FALSE)
 
       xend <- length(x)
       out <- list(

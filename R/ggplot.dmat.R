@@ -85,7 +85,7 @@ ggplot.dmat <- function(dm){
 
   h <- reshape2::melt(dm, na.rm = TRUE)
 
-  p <- ggplot2::ggplot(data = h, ggplot2::aes(x=Var1, y=Var2, fill=value)) +
+  p <- ggplot2::ggplot(data = h, ggplot2::aes_string(x="Var1", y="Var2", fill="value")) +
           ggplot2::geom_raster() +
           ggplot2::scale_fill_gradient2(low = "blue",
                                         high = "red",

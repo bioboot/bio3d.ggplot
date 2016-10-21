@@ -24,9 +24,6 @@ Currently the main function is \code{ggplot.dmat}, which returns a
  and one vector plot function (the later like \code{plot.bio3d}. The 
  plot.dmat function is the start of the first.
 }
-\section{Currently the main function is \code{ggplot.dmat}.}{
-
-}
 \examples{
  ##- Single structure distance matrix
  pdb <- bio3d::read.pdb( "5p21" )
@@ -38,6 +35,7 @@ Currently the main function is \code{ggplot.dmat}, which returns a
  p  ## produce the plot
 
 
+\donttest{ 
  ## Data driven axis from SSE boundaries
  sse_labels <- c(pdb$helix$start, pdb$sheet$start,
                  pdb$helix$end, pdb$sheet$end)
@@ -54,24 +52,27 @@ Currently the main function is \code{ggplot.dmat}, which returns a
    scale_x_continuous(expand = c(0, 0)) +
    scale_y_continuous(expand = c(0, 0))  ## start axis at zero
 
-##- Calculate and plot correlation matrix
-cij <- dccm.nma(nma(pdb))
-q <- ggplot.dmat(cij) + gg_sse(pdb)
-q
 
-q +  scale_fill_gradient2(limit = c(-1,1),
-         high = "red", mid = "white", low = "blue")
+ ##- Calculate and plot correlation matrix
+ cij <- dccm.nma(nma(pdb))
+ q <- ggplot.dmat(cij) + gg_sse(pdb)
+ q
 
-##- Difference distance matrices (DDM) of heterogeneous structures
-pdbs <- pdbaln( c("5p21","4q21") )
-mat <- dm(pdbs, mask.lower=FALSE)
-ddm <- mat[,,1] - mat[,,2]
-ggplot.dmat(ddm) + gg_sse(pdbs)
+ q +  scale_fill_gradient2(limit = c(-1,1),
+          high = "red", mid = "white", low = "blue")
 
-##- Contact maps
-cm <- cmap(pdb, scut=0, mask.lower=FALSE)
-ggplot.dmat(cm) + gg_sse(pdb) + theme(legend.position="none")
 
+ ##- Difference distance matrices (DDM) of heterogeneous structures
+ pdbs <- pdbaln( c("5p21","4q21") )
+ mat <- dm(pdbs, mask.lower=FALSE)
+ ddm <- mat[,,1] - mat[,,2]
+ ggplot.dmat(ddm) + gg_sse(pdbs)
+
+
+ ##- Contact maps
+ cm <- cmap(pdb, scut=0, mask.lower=FALSE)
+ ggplot.dmat(cm) + gg_sse(pdb) + theme(legend.position="none")
+}
 
 }
 
