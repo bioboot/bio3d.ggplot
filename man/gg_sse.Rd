@@ -5,7 +5,7 @@
 \title{Add Secondary Structure Annotation to a ggplot Matrix}
 \usage{
 gg_sse(x, min = -5, max = 0, helix.col = "gray20", sheet.col = "gray80",
-  sse.border = "black")
+  sse.border = "black", side = c(1, 2))
 }
 \arguments{
 \item{x}{A bio3d object with secondary structure information. Most commonly
@@ -26,6 +26,9 @@ width of sse annotation rectangles.}
 \item{sheet.col}{The fill colors for rectangles representing beta strands.}
 
 \item{sse.border}{The stroke color for rectangle borders.}
+
+\item{side}{A numeric vector with values 1 to 4 specifying he side of the 
+plot where annotations will be drawn. Note sides 3 and 4 are not set}
 }
 \value{
 A list of annotation layers for adding to a ggplot object.

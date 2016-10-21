@@ -16,6 +16,8 @@
 #' @param helix.col The fill colors for rectangles representing alpha helices.
 #' @param sheet.col The fill colors for rectangles representing beta strands.
 #' @param sse.border The stroke color for rectangle borders.
+#' @param side A numeric vector with values 1 to 4 specifying he side of the 
+#'   plot where annotations will be drawn. Note sides 3 and 4 are not set 
 #'
 #' @return A list of annotation layers for adding to a ggplot object.
 #'
@@ -40,8 +42,7 @@
 #'  gg.mat(k) + gg_sse(pdb) ## Add secondary structure from pdb
 #'
 #' @export
-
-gg_sse <- function(x, min=-5, max=0, helix.col = "gray20", sheet.col = "gray80", sse.border = "black") {
+gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse.border="black", side=c(1,2)) {
   ## Add secondary structure to a ggplot
   ##
   ## input x can be a 'pdb' class, 'pdbs' class or vector as obtained from pdb2sse()
@@ -51,57 +52,67 @@ gg_sse <- function(x, min=-5, max=0, helix.col = "gray20", sheet.col = "gray80",
   ##           Better yet have a 'sse.scale' and optional 'sse.size' arguments to control width.
 
 
-pdbs2helix <- function(pdbs) {
-  ##- Convert 'sse' info from a 'pdbs' object to list format for gg_sse()
-  h <- which(pdbs$sse == "H", arr.ind=TRUE)
-  e <- which(pdbs$sse == "E", arr.ind=TRUE)
-
-  ## Consider first two structures only!!
-  h1 = bio3d::bounds(h[h[,1]==1,2], pre.sort = FALSE)
-  e1 = bio3d::bounds(e[e[,1]==1,2], pre.sort = FALSE)
-
-  h2 = bio3d::bounds(h[h[,1]==2,2], pre.sort = FALSE)
-  e2 = bio3d::bounds(e[e[,1]==2,2], pre.sort = FALSE)
-
-  ## could add a length filter here
-  pdb1 <- list(helix=list(start=h1[,"start"], end=h1[,"end"]),
-               sheet=list(start=e1[,"start"], end=e1[,"end"]) )
-
-  pdb2 <- list(helix=list(start=h2[,"start"], end=h2[,"end"]),
-               sheet=list(start=e2[,"start"], end=e2[,"end"]) )
-
-  return( list(pdb1=pdb1, pdb2=pdb2 ) )
-}
-
-
+  ### min=-5; max=0; helix.col="gray20"; sheet.col="gray80"; sse.border="black"; side=3
+  ymax=100+abs(min)
+  xmax=100+abs(min)
+  ### Need to work out max plot dims!!
+  ### Need to check side is numeric 1:4
 
   mid <- (min-max)/2
 
-  if( inherits(x,"pdb") ) {
+  ##- Single structure input all sides will be the same.
+  if( inherits(x, c("pdb","sse")) ) {
 
-    xend <- sum(x$calpha)
-    out <- list(
-      ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-      ggplot2::annotate("rect", xmin=x$helix$start, xmax =x$helix$end, ymin=min, ymax=max, col=sse.border, bg=helix.col),
-      ggplot2::annotate("rect", xmin=x$sheet$start, xmax =x$sheet$end, ymin=min, ymax=max, col=sse.border, bg=sheet.col),
+    if( inherits(x,"pdb") ) {
+      ## PDB objects dont currently rtn $sse vector from which to get nres...
+      xend   <- sum(x$calpha)
+    } else {
+      xend   <- length(x$sse)
+    }
 
-      ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=x$helix$start, ymax=x$helix$end, col=sse.border, bg=helix.col),
-      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=x$sheet$start, ymax=x$sheet$end, col=sse.border, bg=sheet.col) )
+    ## For sides 1 and 3
+    hstart <- x$helix$start
+    hend   <- x$helix$end
+    sstart <- x$sheet$start
+    send   <- x$sheet$end
+
+    ## For sides 2 and 4 
+    ##  (one input structure only so these will be the same)
+    hstart.2 <- hstart
+    hend.2   <- hend
+    sstart.2 <- sstart
+    send.2   <- send
+
   }
 
+
+  ## Two structure input assumed e.g. DDM
   if( inherits(x,"pdbs") ){
 
-    xs <- pdbs2helix(x)
     xend <- ncol(x$sse)
-    out <- list(
-      ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-      ggplot2::annotate("rect", xmin=xs$pdb1$helix$start, xmax=xs$pdb1$helix$end, ymin =min, ymax=max, col=sse.border, bg=helix.col),
-      ggplot2::annotate("rect", xmin=xs$pdb1$sheet$start, xmax=xs$pdb1$sheet$end, ymin =min, ymax=max, col=sse.border, bg=sheet.col),
+    h <- which(x$sse == "H", arr.ind=TRUE)
+    e <- which(x$sse == "E", arr.ind=TRUE)
 
-      ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$helix$start, ymax=xs$pdb2$helix$end, col=sse.border, bg=helix.col),
-      ggplot2::annotate("rect", xmin=min, xmax=max, ymin=xs$pdb2$sheet$start, ymax=xs$pdb2$sheet$end, col=sse.border, bg=sheet.col) )
+    ##-- N.B.-- Consider first two structures only!!
+    h1 = bio3d::bounds(h[h[,1]==1,2], pre.sort = FALSE)
+    e1 = bio3d::bounds(e[e[,1]==1,2], pre.sort = FALSE)
+
+    h2 = bio3d::bounds(h[h[,1]==2,2], pre.sort = FALSE)
+    e2 = bio3d::bounds(e[e[,1]==2,2], pre.sort = FALSE)
+
+    ## For sides 1 and 3
+    hstart <- h1[,"start"]
+    hend   <- h1[,"end"]
+    sstart <- e1[,"start"]
+    send   <- e1[,"end"]
+
+    ## For sides 2 and 4 
+    ##  (note different structure here!)
+    hstart.2 <- h2[,"start"]
+    hend.2   <- h2[,"end"]
+    sstart.2 <- e2[,"start"]
+    send.2   <- e2[,"end"]
+
 
   } else {
 
@@ -111,15 +122,91 @@ pdbs2helix <- function(pdbs) {
       e <- bio3d::bounds(which(x == "E"), pre.sort = FALSE)
 
       xend <- length(x)
-      out <- list(
-        ggplot2::annotate("segment", x=1, xend=xend, y=mid, yend=mid),
-        ggplot2::annotate("rect", xmin=h[,"start"], xmax=h[,"end"], ymin =min, ymax=max, col=sse.border, bg=helix.col),
-        ggplot2::annotate("rect", xmin=e[,"start"], xmax=e[,"end"], ymin =min, ymax=max, col=sse.border, bg=sheet.col),
-
-        ggplot2::annotate("segment", x=mid, xend=mid, y=1, yend=xend),
-        ggplot2::annotate("rect", xmin=min, xmax=max, ymin=h[,"start"], ymax=h[,"end"], col=sse.border, bg=helix.col),
-        ggplot2::annotate("rect", xmin=min, xmax=max, ymin=e[,"start"], ymax=e[,"end"], col=sse.border, bg=sheet.col) )
+      
+      hstart <- h[,"start"]
+      hend   <- h[,"end"]
+      sstart <- e[,"start"]
+      send   <- e[,"end"]
+      hstart.2 <- hstart
+      hend.2   <- hend
+      sstart.2 <- sstart
+      send.2   <- send
     }
   }
-  out
+
+  ## Build up vectors for helix and sheet rectangles
+  hxmin=NULL; hxmax=NULL; hymin=NULL; hymax=NULL
+  sxmin=NULL; sxmax=NULL; symin=NULL; symax=NULL
+  segx=NULL; segxend=NULL; segy=NULL; segyend=NULL
+
+  # side1
+  if( any(side == 1) ) {
+    segx <- c(segx, 1); segxend <- c(segxend, xend)
+    segy <- c(segy, mid); segyend <- c(segyend, mid)
+
+    hxmin <- c(hxmin, hstart) 
+    hxmax <- c(hxmax, hend)
+    hymin <- c(hymin, rep(min, length(hstart)))
+    hymax <- c(hymax, rep(max, length(hstart)))
+
+    sxmin <- c(sxmin, sstart) 
+    sxmax <- c(sxmax, send)
+    symin <- c(symin, rep(min, length(sstart)))
+    symax <- c(symax, rep(max, length(sstart)))
+  }
+
+  # side2
+  if( any(side == 2) ) {
+    segx <- c(segx, mid); segxend <- c(segxend, mid)
+    segy <- c(segy, 1); segyend <- c(segyend, xend)
+
+    hxmin <- c(hxmin, rep(min, length(hstart))) 
+    hxmax <- c(hxmax, rep(max, length(hstart)))
+    hymin <- c(hymin, hstart.2)
+    hymax <- c(hymax, hend.2)
+
+    sxmin <- c(sxmin, rep(min, length(sstart))) 
+    sxmax <- c(sxmax, rep(max, length(sstart)))
+    symin <- c(symin, sstart.2)
+    symax <- c(symax, send.2)
+  }
+
+  # side3
+  if( any(side == 3) ) {
+    segx <- c(segx, 1); segxend <- c(segxend, xend)
+    segy <- c(segy, mid+ymax); segyend <- c(segyend, mid+ymax)
+
+    hxmin <- c(hxmin, hstart) 
+    hxmax <- c(hxmax, hend)
+    hymin <- c(hymin, rep((min+ymax), length(hstart)))
+    hymax <- c(hymax, rep((max+ymax), length(hstart)))
+
+    sxmin <- c(sxmin, sstart) 
+    sxmax <- c(sxmax, send)
+    symin <- c(symin, rep((min+ymax), length(sstart)))
+    symax <- c(symax, rep((max+ymax), length(sstart)))
+  }
+
+  # side4
+  if( any(side == 4) ) {
+    segx <- c(segx, mid+xmax); segxend <- c(segxend, mid+xmax)
+    segy <- c(segy, 1); segyend <- c(segyend, xend)
+
+    hxmin <- c(hxmin, rep((min+xmax), length(hstart))) 
+    hxmax <- c(hxmax, rep((max+xmax), length(hstart)))
+    hymin <- c(hymin, hstart.2)
+    hymax <- c(hymax, hend.2)
+
+    sxmin <- c(sxmin, rep((min+xmax), length(sstart))) 
+    sxmax <- c(sxmax, rep((max+xmax), length(sstart)))
+    symin <- c(symin, sstart.2)
+    symax <- c(symax, send.2)
+  }
+
+  out <- list(
+    ggplot2::annotate("segment", x=segx, xend=segxend, y=segy, yend=segyend),
+    ggplot2::annotate("rect", xmin=hxmin, xmax=hxmax, ymin=hymin, ymax=hymax, col=sse.border, bg=helix.col),
+    ggplot2::annotate("rect", xmin=sxmin, xmax=sxmax, ymin=symin, ymax=symax, col=sse.border, bg=sheet.col)
+  )
 }
+
