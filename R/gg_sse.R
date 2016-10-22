@@ -53,10 +53,12 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
 
 
   ### min=-5; max=0; helix.col="gray20"; sheet.col="gray80"; sse.border="black"; side=3
-  ymax=100+abs(min)
-  xmax=100+abs(min)
-  ### Need to work out max plot dims!!
-  ### Need to check side is numeric 1:4
+  #ymax=100+abs(min)
+  #xmax=100+abs(min)
+  ### Need to work out max plot dims in a better way!!
+  if(!(is.numeric(side) && all(side %in% 1:4))) {
+    stop("The 'side=' for SSE annotation should be a vector of values between 1 and 4 only")
+  }
 
   mid <- (min-max)/2
 
@@ -64,10 +66,17 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
   if( inherits(x, c("pdb","sse")) ) {
 
     if( inherits(x,"pdb") ) {
+
+      ## Maximum plot dimension 'xmax' and 'ymax'
+      ## For now we get max plot dim from residue number.
+      ## NEED A BETTER WAY (i.e. either pass plot object or inheret it)
+      xmax <- sum(summary(pdb)[c("nprot.res", "nother.res")])
+
       ## PDB objects dont currently rtn $sse vector from which to get nres...
       xend   <- sum(x$calpha)
     } else {
       xend   <- length(x$sse)
+      xmax <- xend + 4 ## !!!-- Hack: we dont have non-protein in dssp output --!!!
     }
 
     ## For sides 1 and 3
@@ -90,6 +99,8 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
   if( inherits(x,"pdbs") ){
 
     xend <- ncol(x$sse)
+    xmax <- xend
+
     h <- which(x$sse == "H", arr.ind=TRUE)
     e <- which(x$sse == "E", arr.ind=TRUE)
 
@@ -122,6 +133,7 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
       e <- bio3d::bounds(which(x == "E"), pre.sort = FALSE)
 
       xend <- length(x)
+      xmax <- xend
       
       hstart <- h[,"start"]
       hend   <- h[,"end"]
@@ -138,6 +150,10 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
   hxmin=NULL; hxmax=NULL; hymin=NULL; hymax=NULL
   sxmin=NULL; sxmax=NULL; symin=NULL; symax=NULL
   segx=NULL; segxend=NULL; segy=NULL; segyend=NULL
+
+  # Plot max limit
+  xmax=xmax+abs(min)
+  ymax=xmax
 
   # side1
   if( any(side == 1) ) {
