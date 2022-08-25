@@ -70,7 +70,7 @@ gg_sse <- function(x, min=-5, max=0, helix.col="gray20", sheet.col="gray80", sse
       ## Maximum plot dimension 'xmax' and 'ymax'
       ## For now we get max plot dim from residue number.
       ## NEED A BETTER WAY (i.e. either pass plot object or inheret it)
-      xmax <- sum(summary(pdb)[c("nprot.res", "nother.res")])
+      xmax <- sum(summary(x)[c("nprot.res", "nother.res")])
 
       ## PDB objects dont currently rtn $sse vector from which to get nres...
       xend   <- sum(x$calpha)
